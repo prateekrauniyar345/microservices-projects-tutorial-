@@ -1,0 +1,34 @@
+# Git
+.git
+.gitignore
+
+# macOS junk
+**/.DS_Store
+**/._*
+
+# Python
+**/__pycache__
+*.pyc
+*.pyo
+*.egg-info
+.pytest_cache
+
+# Virtual environments
+.venv
+venv
+env
+app/.venv
+
+# Node (just in case)
+node_modules
+
+# IDEs
+.vscode
+.idea
+
+# Logs
+*.log
+
+# Env files
+.env
+.env.local

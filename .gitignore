@@ -1,0 +1,20 @@
+**/*.idea
+venv/*
+.venv/*
+env/
+**/*.pytest_cache
+**/__pycache__
+**/.DS_Store
+
+
+
+# ignore the .env files
+.env
+.env.*
+
+
+# ignore the .vscode directory
+.vscode/
+
+# ignore the clean.sh file
+.clean.sh

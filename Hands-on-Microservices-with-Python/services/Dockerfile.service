@@ -1,0 +1,11 @@
+FROM python:3.9-alpine
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir flask requests
+
+COPY . .
+
+EXPOSE 5010
+
+CMD ["python", "app.py"]

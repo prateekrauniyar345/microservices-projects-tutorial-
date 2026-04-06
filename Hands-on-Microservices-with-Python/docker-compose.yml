@@ -13,6 +13,7 @@ services:
     command : python3 user_service.py
     volumes: 
       - ./services/user_service.py:/app/user_service.py
+      - ./data:/data
     ports:
       - "5001:5010"
     environment:
@@ -34,6 +35,7 @@ services:
     command : python3 product_service.py
     volumes: 
       - ./services/product_service.py:/app/product_service.py
+      - ./data:/data
     ports:
       - "5002:5010"
     environment:
@@ -55,6 +57,7 @@ services:
     command : python3 order_service.py
     volumes: 
       - ./services/order_service.py:/app/order_service.py
+      - ./data:/data
     ports:
       - "5003:5010"
     environment:

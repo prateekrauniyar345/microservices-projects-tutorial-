@@ -30,3 +30,9 @@ env/
 
 # ignore the .db files. 
 *.db
+
+# ignore the .log files
+*.log
+
+# ignore the data folder
+data/

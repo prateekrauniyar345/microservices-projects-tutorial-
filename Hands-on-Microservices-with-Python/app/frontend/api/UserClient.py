@@ -12,7 +12,7 @@ class UserClient:
             'password': form.password.data,
         }
         print("login payload is : \n",payload) 
-        url = 'http://user:5012/api/user/login'
+        url = 'http://user:5010/api/user/login'
         try:
             response = requests.request("POST", url=url, data=payload, timeout=5)
             print("response for login is : \n",response.text)
@@ -30,7 +30,7 @@ class UserClient:
 
     @staticmethod
     def does_exist(username):
-        url = 'http://user:5012/api/user/'+username+'/exist'
+        url = 'http://user:5010/api/user/'+username+'/exist'
         try:
             response = requests.request("GET", url=url, timeout=5)
             return response.status_code == 200
@@ -51,7 +51,7 @@ class UserClient:
             'last_name': form.last_name.data,
             'username': form.username.data
         }
-        url = 'http://user:5012/api/user/create'
+        url = 'http://user:5010/api/user/create'
         try:
             response = requests.request("POST", url=url, data=payload, timeout=5)
             if response:
@@ -70,7 +70,7 @@ class UserClient:
             'Authorization': 'Basic ' + session['user_api_key']
         }
         try:
-            response = requests.request(method="GET", url='http://user:5012/api/user', headers=headers, timeout=5)
+            response = requests.request(method="GET", url='http://user:5010/api/user', headers=headers, timeout=5)
             user = response.json()
             return user
         except requests.exceptions.ConnectionError:

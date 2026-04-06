@@ -89,9 +89,9 @@ def get_user():
     return jsonify({'success': False, 'message': 'Unauthorized'}), 401
 
 if __name__ == '__main__':
-    print("User Service starting on 0.0.0.0:5012")
+    print("User Service starting on 0.0.0.0:5010")
     app.run(
         host='0.0.0.0', 
-        port=5012, 
+        port=5010, 
         debug=True
     )

@@ -6,7 +6,7 @@ class ProductClient:
     @staticmethod
     def get_product(slug):
         try:
-            response = requests.request(method="GET", url='http://product:5011/api/product/' + slug, timeout=5)
+            response = requests.request(method="GET", url='http://product:5010/api/product/' + slug, timeout=5)
             product = response.json()
             return product
         except requests.exceptions.ConnectionError:
@@ -19,7 +19,7 @@ class ProductClient:
     @staticmethod
     def get_products():
         try:
-            r = requests.get('http://product:5011/api/products', timeout=5)
+            r = requests.get('http://product:5010/api/products', timeout=5)
             products = r.json()
             return products
         except requests.exceptions.ConnectionError:

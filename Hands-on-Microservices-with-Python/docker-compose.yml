@@ -1,75 +1,51 @@
 version: '3.8'
 
-services:
-  # Frontend web application
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: frontend
-    ports:
-      - "5000:5010"  # Map localhost:5000 to container:5010
-    volumes:
-      - ./app:/app
-    environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=development
-    depends_on:
-      - user
-      - product
-      - order
-    networks:
-      - microservices-network
-    restart: unless-stopped
 
-  # User Service Mock (placeholder)
+services:
   user:
     build:
       context: .
-      dockerfile: services/Dockerfile.service
+      dockerfile: services/Dockerfile.services
+
     container_name: user
-    working_dir: /app
-    command: python user_service.py
-    volumes:
+
+    working_dir : /app
+    command : python3 user_service.py
+    volumes: 
       - ./services/user_service.py:/app/user_service.py
     ports:
       - "5001:5010"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=user_service.py
     networks:
       - microservices-network
     restart: unless-stopped
 
-  # Product Service Mock (placeholder)
+  
   product:
     build:
       context: .
-      dockerfile: services/Dockerfile.service
+      dockerfile: services/Dockerfile.services
+
     container_name: product
-    working_dir: /app
-    command: python product_service.py
-    volumes:
+
+    working_dir : /app
+    command : python3 product_service.py
+    volumes: 
       - ./services/product_service.py:/app/product_service.py
     ports:
       - "5002:5010"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=product_service.py
     networks:
       - microservices-network
     restart: unless-stopped
 
-  # Order Service Mock (placeholder)
-  order:
-    build:
-      context: .
-      dockerfile: services/Dockerfile.service
-    container_name: order
-    working_dir: /app
-    command: python order_service.py
-    volumes:
-      - ./services/order_service.py:/app/order_service.py
-    ports:
-      - "5003:5010"
-    networks:
-      - microservices-network
-    restart: unless-stopped
 
 networks:
   microservices-network:
     driver: bridge
+
+

@@ -30,6 +30,10 @@ PRODUCTS = {
     }
 }
 
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({'message': 'Product Service is running'}), 200
+
 @app.route('/api/products', methods=['GET'])
 def get_products():
     """Get all products"""
@@ -50,5 +54,9 @@ def get_product(slug):
     return jsonify({'success': False, 'message': 'Product not found'}), 404
 
 if __name__ == '__main__':
-    print("Product Service starting on 0.0.0.0:5010")
-    app.run(host='0.0.0.0', port=5010, debug=False)
+    print("Product Service starting on 0.0.0.0:5011")
+    app.run(
+        host='0.0.0.0', 
+        port=5011, 
+        debug=True
+    )

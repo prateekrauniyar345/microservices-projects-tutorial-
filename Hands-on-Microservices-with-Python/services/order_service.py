@@ -12,6 +12,12 @@ ORDERS = {
     }
 }
 
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({'message': 'Order Service is running'}), 200
+
+
+
 @app.route('/api/order', methods=['GET'])
 def get_order():
     """Get current order"""
@@ -88,4 +94,8 @@ def checkout():
 
 if __name__ == '__main__':
     print("Order Service starting on 0.0.0.0:5010")
-    app.run(host='0.0.0.0', port=5010, debug=False)
+    app.run(
+        host='0.0.0.0', 
+        port=5010, 
+        debug=True
+    )

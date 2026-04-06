@@ -63,12 +63,15 @@ def login():
 def register():
 
     form = forms.RegisterForm(request.form)
+    print("form is :" , form)
+    print("form data is : ", form.data)
     if request.method == "POST":
         if form.validate_on_submit():
             username = form.username.data
 
             # Search for existing user
             user = UserClient.does_exist(username)
+            print("user existance result is : " , user)
             if user:
                 # Existing user found
                 flash('Please try another username', 'error')
@@ -80,6 +83,8 @@ def register():
                     # Store user ID in session and redirect
                     flash('Thanks for registering, please login', 'success')
                     return redirect(url_for('frontend.login'))
+                
+            return redirect(url_for('frontend.login'))
 
         else:
             flash('Errors found', 'error')

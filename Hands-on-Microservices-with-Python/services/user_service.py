@@ -17,6 +17,12 @@ USERS = {
 
 API_KEY = 'mock-api-key-12345'
 
+
+# defualt home route
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({'message': 'User Service is running'}), 200
+
 @app.route('/api/user/login', methods=['POST'])
 def login():
     """Mock login endpoint"""
@@ -25,6 +31,7 @@ def login():
     password = data.get('password')
     
     user = USERS.get(username)
+    print("Login attempt: username=%s, password=%s" % (username, password))
     if user and user['password'] == password:
         return jsonify({
             'api_key': API_KEY,
@@ -82,5 +89,9 @@ def get_user():
     return jsonify({'success': False, 'message': 'Unauthorized'}), 401
 
 if __name__ == '__main__':
-    print("User Service starting on 0.0.0.0:5010")
-    app.run(host='0.0.0.0', port=5010, debug=False)
+    print("User Service starting on 0.0.0.0:5012")
+    app.run(
+        host='0.0.0.0', 
+        port=5012, 
+        debug=True
+    )

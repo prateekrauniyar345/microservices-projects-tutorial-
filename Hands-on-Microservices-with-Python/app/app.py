@@ -1,7 +1,7 @@
 from flask import Blueprint, Flask, session
 from flask_login import LoginManager, UserMixin
 from flask_bootstrap import Bootstrap
-from frontend import frontend_blueprint
+from app.frontend import frontend_blueprint
 
 
 # User class for Flask-Login

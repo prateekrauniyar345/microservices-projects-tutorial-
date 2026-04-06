@@ -65,6 +65,28 @@ services:
     restart: unless-stopped
 
 
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: frontend
+    working_dir : /app
+    volumes:
+      - ./app:/app
+    ports:
+      - "8080:5010"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+    depends_on:
+      - user
+      - product
+      - order
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+
 networks:
   microservices-network:
     driver: bridge

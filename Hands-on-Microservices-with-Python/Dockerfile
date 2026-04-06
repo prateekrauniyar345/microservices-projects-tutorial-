@@ -1,17 +1,12 @@
-FROM python:3.13.3-alpine
-
-MAINTAINER Peter Fisher
-
-COPY ./app/requirements.txt /app/requirements.txt
+FROM python:3.13-slim
 
 WORKDIR /app
 
-RUN apk add --update \
-  && pip install --upgrade pip  \
-  && pip install -r requirements.txt \
-  && rm -rf /var/cache/apk/*
+COPY app/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./app /app
+COPY app/ .
 
-CMD ["python", "app.py"]
+EXPOSE 5010
 
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5010"]

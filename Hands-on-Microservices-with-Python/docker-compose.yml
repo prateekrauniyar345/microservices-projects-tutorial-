@@ -43,6 +43,27 @@ services:
       - microservices-network
     restart: unless-stopped
 
+  
+  order:
+    build:
+      context: .
+      dockerfile: services/Dockerfile.services
+
+    container_name: order
+
+    working_dir : /app
+    command : python3 order_service.py
+    volumes: 
+      - ./services/order_service.py:/app/order_service.py
+    ports:
+      - "5003:5010"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=order_service.py
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
 
 networks:
   microservices-network:

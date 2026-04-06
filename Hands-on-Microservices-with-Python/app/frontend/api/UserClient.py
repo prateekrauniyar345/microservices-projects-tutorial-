@@ -1,7 +1,6 @@
+# /app/frontend/api/UserClient.py
 from flask import session
 import requests
-
-
 class UserClient:
 
     @staticmethod

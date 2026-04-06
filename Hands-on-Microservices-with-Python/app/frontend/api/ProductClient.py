@@ -1,6 +1,5 @@
+# /app/frontend/api/ProductClient.py
 import requests
-
-
 class ProductClient:
 
     @staticmethod

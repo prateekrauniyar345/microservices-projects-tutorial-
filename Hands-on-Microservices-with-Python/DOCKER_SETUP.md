@@ -47,12 +47,6 @@ The mock user service has a default user:
 When you're ready to use the actual microservices from the separate repositories:
 
 1. Clone the repositories into your workspace:
-```bash
-cd /Volumes/ORICO/learnings/microservices
-git clone https://github.com/PacktPublishing/Hands-on-Microservices-with-Python-User-Service.git user_service
-git clone https://github.com/PacktPublishing/Hands-on-Microservices-with-Python-Product-Service.git product_service
-git clone https://github.com/PacktPublishing/Hands-on-Microservices-with-Python-Order-Service.git order_service
-```
 
 2. Update the `docker-compose.yml` to point to those repositories instead of the mock services
 

@@ -10,13 +10,14 @@ services:
     container_name: user
 
     working_dir : /app
-    command : python3 user_service.py
+    command: flask --app user_service run --host=0.0.0.0 --port=5010 --debug
     volumes: 
-      - ./services/user_service.py:/app/user_service.py
+      - ./services:/app
       - ./data:/data
     ports:
       - "5001:5010"
     environment:
+      - PYTHONUNBUFFERED=1
       - FLASK_ENV=development
       - FLASK_APP=user_service.py
     networks:
@@ -32,13 +33,14 @@ services:
     container_name: product
 
     working_dir : /app
-    command : python3 product_service.py
+    command: flask --app product_service run --host=0.0.0.0 --port=5010 --debug
     volumes: 
-      - ./services/product_service.py:/app/product_service.py
+      - ./services:/app
       - ./data:/data
     ports:
       - "5002:5010"
     environment:
+      - PYTHONUNBUFFERED=1
       - FLASK_ENV=development
       - FLASK_APP=product_service.py
     networks:
@@ -54,13 +56,14 @@ services:
     container_name: order
 
     working_dir : /app
-    command : python3 order_service.py
+    command: flask --app order_service run --host=0.0.0.0 --port=5010 --debug
     volumes: 
-      - ./services/order_service.py:/app/order_service.py
+      - ./services:/app
       - ./data:/data
     ports:
       - "5003:5010"
     environment:
+      - PYTHONUNBUFFERED=1
       - FLASK_ENV=development
       - FLASK_APP=order_service.py
     networks:
@@ -74,11 +77,13 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     working_dir : /app
+    command: flask --app app run --host=0.0.0.0 --port=5010 --debug
     volumes:
       - ./app:/app
     ports:
       - "8080:5010"
     environment:
+      - PYTHONUNBUFFERED=1
       - FLASK_ENV=development
       - FLASK_APP=app.py
     depends_on:

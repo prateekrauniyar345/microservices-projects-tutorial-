@@ -38,5 +38,6 @@ app.config.update(dict(
 app.register_blueprint(frontend_blueprint)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5010, use_reloader=False)
+    print("app is running on port 5010", flush=True)
+    app.run(debug=True, host='0.0.0.0', port=5010, use_reloader=True)
 

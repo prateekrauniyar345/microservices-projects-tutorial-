@@ -2,6 +2,23 @@ from flask import Flask, jsonify
 import sqlite3
 import os
 
+
+"""
+Products Table Schema:
+
+Column          | Type    | Nullable | Constraints
+-----------------------------------------------------
+Code            | INTEGER | NO       | PRIMARY KEY
+Title           | TEXT    | YES      | NO
+Description     | TEXT    | YES      | NO
+Vendor          | TEXT    | YES      | NO
+Product         | TEXT    | YES      | NO
+Tags            | TEXT    | YES      | NO
+Inventory       | REAL    | YES      | NO
+Price           | REAL    | YES      | NO
+Image           | TEXT    | YES      | NO
+"""
+
 app = Flask(__name__)
 
 # Database path
@@ -16,24 +33,28 @@ def init_db():
     cursor = conn.cursor()
     
     create_products_table = """
-    CREATE TABLE IF NOT EXISTS jewelry (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        description TEXT,
-        vendor TEXT,
-        product_type TEXT,
-        tags TEXT,
-        inventory_quantity REAL,
-        price REAL,
-        image_url TEXT,
-        code INTEGER,
-        slug TEXT UNIQUE
+    CREATE TABLE IF NOT EXISTS products (
+        Code INTEGER PRIMARY KEY,
+        Title TEXT,
+        Description TEXT,
+        Vendor TEXT,
+        Product TEXT,
+        Tags TEXT,
+        Inventory REAL,
+        Price REAL,
+        Image TEXT
     );
     """
     
-    cursor.execute(create_products_table)
-    conn.commit()
-    conn.close()
+    try:
+        cursor.execute(create_products_table)
+        conn.commit()
+        print("Products table created successfully", flush=True)
+    except sqlite3.OperationalError as e:
+        print(f"Database error (may be expected if table exists): {e}", flush=True)
+        conn.rollback()
+    finally:
+        conn.close()
 
 # Initialize database on startup
 init_db()
@@ -50,10 +71,10 @@ def get_products():
     cursor = conn.cursor()
     
     cursor.execute("""
-        SELECT id, title as name, description, vendor, product_type, 
-               tags, inventory_quantity, price, image_url, code, slug
-        FROM jewelry
-        WHERE inventory_quantity > 0
+        SELECT Code, Title, Description, Vendor, Product, 
+               Tags, Inventory, Price, Image
+        FROM products
+        WHERE Inventory > 0
     """)
     
     products = [dict(row) for row in cursor.fetchall()]
@@ -64,19 +85,19 @@ def get_products():
         'success': True
     }), 200
 
-@app.route('/api/product/<slug>', methods=['GET'])
-def get_product(slug):
-    """Get single product by slug"""
+@app.route('/api/product/<int:code>', methods=['GET'])
+def get_product(code):
+    """Get single product by code"""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     
     cursor.execute("""
-        SELECT id, title as name, description, vendor, product_type,
-               tags, inventory_quantity, price, image_url, code, slug
-        FROM jewelry
-        WHERE slug = ?
-    """, (slug,))
+        SELECT Code, Title, Description, Vendor, Product,
+               Tags, Inventory, Price, Image
+        FROM products
+        WHERE Code = ?
+    """, (code,))
     
     product = cursor.fetchone()
     conn.close()
@@ -90,7 +111,7 @@ def get_product(slug):
     return jsonify({'success': False, 'message': 'Product not found'}), 404
 
 if __name__ == '__main__':
-    print("Product Service starting on 0.0.0.0:5010")
+    print("Product Service starting on 0.0.0.0:5010", flush=True)
     app.run(
         host='0.0.0.0', 
         port=5010, 

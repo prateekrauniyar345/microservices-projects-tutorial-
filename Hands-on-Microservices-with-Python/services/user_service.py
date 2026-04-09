@@ -54,7 +54,7 @@ def login():
     user = cursor.fetchone()
     conn.close()
     
-    print("Login attempt: username=%s, password=%s" % (username, password))
+    print("Login attempt: username=%s, password=%s" % (username, password), flush=True)
     
     if user and user['password'] == password:
         return jsonify({
@@ -152,7 +152,7 @@ def get_user():
     return jsonify({'success': False, 'message': 'User not found'}), 404
 
 if __name__ == '__main__':
-    print("User Service starting on 0.0.0.0:5010")
+    print("User Service starting on 0.0.0.0:5010", flush=True)
     app.run(
         host='0.0.0.0', 
         port=5010, 

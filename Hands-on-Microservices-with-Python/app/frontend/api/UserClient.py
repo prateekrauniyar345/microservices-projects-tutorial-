@@ -10,11 +10,11 @@ class UserClient:
             'username': form.username.data,
             'password': form.password.data,
         }
-        print("login payload is : \n",payload) 
+        print("login payload is : \n",payload, flush=True) 
         url = 'http://user:5010/api/user/login'
         try:
             response = requests.request("POST", url=url, data=payload, timeout=5)
-            print("response for login is : \n",response.text)
+            print("response for login is : \n",response.text, flush=True)
             if response:
                 d = response.json()
                 if d.get('api_key') is not None:
@@ -23,7 +23,7 @@ class UserClient:
             print(f"[ERROR] User Service unavailable at {url}")
             api_key = False
         except Exception as e:
-            print(f"[ERROR] Login failed: {str(e)}")
+            print(f"[ERROR] Login failed: {str(e)}", flush=True)
             api_key = False
         return api_key
 
@@ -34,10 +34,10 @@ class UserClient:
             response = requests.request("GET", url=url, timeout=5)
             return response.status_code == 200
         except requests.exceptions.ConnectionError:
-            print(f"[ERROR] User Service unavailable at {url}")
+            print(f"[ERROR] User Service unavailable at {url}", flush=True)
             return False
         except Exception as e:
-            print(f"[ERROR] User existence check failed: {str(e)}")
+            print(f"[ERROR] User existence check failed: {str(e)}", flush=True)
             return False
 
     @staticmethod
@@ -56,10 +56,10 @@ class UserClient:
             if response:
                 user = response.json()
         except requests.exceptions.ConnectionError:
-            print(f"[ERROR] User Service unavailable at {url}")
+            print(f"[ERROR] User Service unavailable at {url}", flush=True)
             user = False
         except Exception as e:
-            print(f"[ERROR] User creation failed: {str(e)}")
+            print(f"[ERROR] User creation failed: {str(e)}", flush=True)
             user = False
         return user
 
@@ -73,8 +73,8 @@ class UserClient:
             user = response.json()
             return user
         except requests.exceptions.ConnectionError:
-            print("[ERROR] User Service unavailable")
+            print("[ERROR] User Service unavailable", flush=True)
             return {'result': {}}
         except Exception as e:
-            print(f"[ERROR] Get user failed: {str(e)}")
+            print(f"[ERROR] Get user failed: {str(e)}", flush=True)
             return {'result': {}}

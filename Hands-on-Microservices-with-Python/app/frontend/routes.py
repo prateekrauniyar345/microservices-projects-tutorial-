@@ -12,12 +12,16 @@ from .api.ProductClient import ProductClient
 @frontend_blueprint.route('/', methods=['GET'])
 def home():
     # session.clear()
+    print("default route is called", flush=True)
+    print("is cuerrent user authenticated ? ", current_user.is_authenticated, flush=True)
     if current_user.is_authenticated:
-        # order = order
-        session['order'] = OrderClient.get_order_from_session()
+        order = OrderClient.get_order_from_session()
+        print("all the order are : ", order, flush=True)
+        session['order'] = order['result']
 
     try:
         products = ProductClient.get_products()
+        print("all the products are : ", products, flush=True)
     except requests.exceptions.ConnectionError:
         products = {
             'results': []
@@ -63,15 +67,15 @@ def login():
 def register():
 
     form = forms.RegisterForm(request.form)
-    print("form is :" , form)
-    print("form data is : ", form.data)
+    print("form is :" , form, flush=True)
+    print("form data is : ", form.data, flush=True)
     if request.method == "POST":
         if form.validate_on_submit():
             username = form.username.data
 
             # Search for existing user
             user = UserClient.does_exist(username)
-            print("user existance result is : " , user)
+            print("user existance result is : " , user, flush=True)
             if user:
                 # Existing user found
                 flash('Please try another username', 'error')
@@ -100,14 +104,14 @@ def logout():
 
 
 # Product page
-@frontend_blueprint.route('/product/<slug>', methods=['GET', 'POST'])
-def product(slug):
+@frontend_blueprint.route('/product/<int:code>', methods=['GET', 'POST'])
+def product(code):
 
     # Get the product
-    response = ProductClient.get_product(slug)
+    response = ProductClient.get_product(code)
     item = response['result']
 
-    form = forms.ItemForm(product_id=item['id'])
+    form = forms.ItemForm(product_id=item['Code'])
 
     if request.method == "POST":
 
@@ -115,7 +119,7 @@ def product(slug):
             flash('Please login', 'error')
             return redirect(url_for('frontend.login'))
 
-        order = OrderClient.post_add_to_cart(product_id=item['id'], qty=1)
+        order = OrderClient.post_add_to_cart(product_id=item['Code'], qty=1)
         session['order'] = order['result']
         flash('Order has been updated', 'success')
 

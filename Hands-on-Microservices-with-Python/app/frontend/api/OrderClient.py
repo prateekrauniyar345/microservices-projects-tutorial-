@@ -15,10 +15,10 @@ class OrderClient:
             order = response.json()
             return order
         except requests.exceptions.ConnectionError:
-            print("[ERROR] Order Service unavailable")
+            print("[ERROR] Order Service unavailable", flush=True)
             return {'result': {'items': {}, 'total': 0}}
         except Exception as e:
-            print(f"[ERROR] Get order failed: {str(e)}")
+            print(f"[ERROR] Get order failed: {str(e)}", flush=True)
             return {'result': {'items': {}, 'total': 0}}
 
     @staticmethod
@@ -33,10 +33,10 @@ class OrderClient:
                 order = response.json()
                 return order
         except requests.exceptions.ConnectionError:
-            print("[ERROR] Order Service unavailable")
+            print("[ERROR] Order Service unavailable", flush=True)
             return {'result': {'items': {}, 'total': 0}}
         except Exception as e:
-            print(f"[ERROR] Update order failed: {str(e)}")
+            print(f"[ERROR] Update order failed: {str(e)}", flush=True)
             return {'result': {'items': {}, 'total': 0}}
 
     @staticmethod
@@ -55,10 +55,10 @@ class OrderClient:
                 order = response.json()
                 return order
         except requests.exceptions.ConnectionError:
-            print("[ERROR] Order Service unavailable")
+            print("[ERROR] Order Service unavailable", flush=True)
             return {'result': {'items': {}, 'total': 0}}
         except Exception as e:
-            print(f"[ERROR] Add to cart failed: {str(e)}")
+            print(f"[ERROR] Add to cart failed: {str(e)}", flush=True)
             return {'result': {'items': {}, 'total': 0}}
 
     @staticmethod
@@ -72,10 +72,10 @@ class OrderClient:
             order = response.json()
             return order
         except requests.exceptions.ConnectionError:
-            print("[ERROR] Order Service unavailable")
+            print("[ERROR] Order Service unavailable", flush=True)
             return {'result': {}}
         except Exception as e:
-            print(f"[ERROR] Checkout failed: {str(e)}")
+            print(f"[ERROR] Checkout failed: {str(e)}", flush=True)
             return {'result': {}}
 
     @staticmethod

@@ -36,7 +36,7 @@ def init_db():
         quantity INTEGER NOT NULL,
         unit_price REAL NOT NULL,
         FOREIGN KEY (order_id) REFERENCES orders(id),
-        FOREIGN KEY (product_id) REFERENCES jewelry(id)
+        FOREIGN KEY (product_id) REFERENCES products(code)
     );
     """
     
@@ -297,7 +297,7 @@ def checkout():
     }), 200
 
 if __name__ == '__main__':
-    print("Order Service starting on 0.0.0.0:5010")
+    print("Order Service starting on 0.0.0.0:5010", flush=True)
     app.run(
         host='0.0.0.0', 
         port=5010, 

@@ -10,6 +10,14 @@
                     <li><a href="/login">Login</a></li>
                     <li><a href="/register">Register</a></li>
                 {% else %}
+                    <!-- User Info Section -->
+                    <li style="margin-right: 20px;">
+                        <div style="padding: 5px 10px;">
+                            <strong>{{ session['user']['username'] }}</strong>
+                            <br/>
+                            <small>{{ session['user']['email'] }}</small>
+                        </div>
+                    </li>
                     <li><a href="/logout">Logout</a></li>
                 {% endif %}
                 <li><a href="/checkout">Checkout <span class="badge">{{ count_items() }}</span></a></li>

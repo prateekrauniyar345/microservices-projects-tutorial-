@@ -4,21 +4,20 @@
 
 {% block pageContent %}
 
-    {% set url = "/product/" + product.slug %}
-    {% set imageSRC = "images/" + product.image_url %}
     <div class="col-md-12">
+        <p>this is product page</p>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2 class="panel-title">{{product.name}}</h2>
+                <h2 class="panel-title">{{product.Title}}</h2>
             </div>
             <div class="panel-body">
                 <div class="img-block">
-                    <img src="{{ url_for('static', filename=imageSRC)}}" width="100%"/>
+                    <img src="{{ product.Image }}" width="100%"/>
                 </div>
             </div>
             <div class="panel-footer">
                 <div class="container">
-                    <div class="label label-default">Price: {{ product.price }}</div>
+                    <div class="label label-default">Price: {{ product.Price }}</div>
                     <form method="POST">
                         {{ form.hidden_tag() }}
 

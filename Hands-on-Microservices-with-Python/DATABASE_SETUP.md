@@ -21,18 +21,16 @@ Stores user account information
 ### 2. Products Database (`data/products.db`)
 Stores product catalog information
 
-**Table: `jewelry`**
-- `id` (INTEGER PRIMARY KEY AUTOINCREMENT) - Unique product identifier
-- `title` (TEXT) - Product name
-- `description` (TEXT) - Product description
-- `vendor` (TEXT) - Vendor name
-- `product_type` (TEXT) - Type of product
-- `tags` (TEXT) - Comma-separated tags
-- `inventory_quantity` (REAL) - Available stock quantity
-- `price` (REAL) - Product price
-- `image_url` (TEXT) - URL to product image
-- `code` (INTEGER) - Product code
-- `slug` (TEXT UNIQUE) - URL-friendly product identifier
+**Table: `products`**
+- `Code` (INTEGER PRIMARY KEY) - Unique product identifier
+- `Title` (TEXT) - Product name
+- `Description` (TEXT) - Product description
+- `Vendor` (TEXT) - Vendor name
+- `Product` (TEXT) - Type of product (e.g., Bracelet, Necklace, Earrings)
+- `Tags` (TEXT) - Comma-separated tags
+- `Inventory` (REAL) - Available stock quantity
+- `Price` (REAL) - Product price
+- `Image` (TEXT) - Image URL (external CDN link)
 
 ### 3. Orders Database (`data/orders.db`)
 Stores order and order item information
@@ -47,7 +45,7 @@ Stores order and order item information
 **Table: `order_items`**
 - `id` (INTEGER PRIMARY KEY AUTOINCREMENT) - Unique item identifier
 - `order_id` (INTEGER) - Reference to order
-- `product_id` (INTEGER) - Reference to product
+- `code` (INTEGER) - Product code (Foreign key: `REFERENCES products(code)`)
 - `quantity` (INTEGER) - Quantity ordered
 - `unit_price` (REAL) - Price at time of order
 
@@ -67,7 +65,7 @@ This will:
 - Create all three databases with proper schema
 - Populate sample data:
   - **Sample User**: `john` / `password123`
-  - **Sample Products**: Laptop, Mouse, Keyboard
+  - **Sample Products**: 20+ jewelry items (bracelets, necklaces, earrings) from the Shopify CDN
 
 ### Option 2: Manual Setup
 
@@ -103,8 +101,8 @@ VALUES ('alice', 'alice@example.com', 'secure_password', 'Alice', 'Smith');
 
 ### Add a new product:
 ```sql
-INSERT INTO jewelry (title, description, vendor, product_type, tags, inventory_quantity, price, image_url, code, slug)
-VALUES ('Gold Ring', 'Beautiful gold ring', 'Luxury Jewelry', 'Jewelry', 'ring,gold', 20.0, 599.99, 'ring.jpg', 2001, 'gold-ring');
+INSERT INTO products (Code, Title, Description, Vendor, Product, Tags, Inventory, Price, Image)
+VALUES (99999, 'Gold Ring', 'Beautiful gold ring', 'Luxury Jewelry', 'Ring', 'ring,gold', 10.0, 599.99, 'https://burst.shopifycdn.com/photos/gold-ring_925x.jpg');
 ```
 
 ## Troubleshooting

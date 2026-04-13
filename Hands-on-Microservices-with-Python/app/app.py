@@ -1,4 +1,4 @@
-from flask import Blueprint, Flask, session
+from flask import Blueprint, Flask, session, jsonify
 from flask_login import LoginManager, UserMixin
 from flask_bootstrap import Bootstrap
 from app.frontend import frontend_blueprint
@@ -28,6 +28,17 @@ def load_user(user_id):
     if 'user' in session:
         return User(user_id)
     return None
+
+
+# Health check endpoint
+@app.route('/health', methods=['GET'])
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'frontend',
+        'version': '1.0.0'
+    }), 200
 
 
 app.config.update(dict(

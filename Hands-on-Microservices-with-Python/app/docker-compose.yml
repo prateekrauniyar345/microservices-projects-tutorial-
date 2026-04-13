@@ -1,0 +1,24 @@
+services:
+  frontend:
+    build: .
+    container_name: frontend
+    ports:
+      - "8080:5010"  # Host port 8080 mapped to container port 5010
+    environment:
+      PYTHONUNBUFFERED: 1
+      FLASK_ENV: development
+      SERVICE_NAME: frontend
+      SERVICE_VERSION: 1.0.0
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+
+networks:
+  microservices-network:
+    driver: bridge

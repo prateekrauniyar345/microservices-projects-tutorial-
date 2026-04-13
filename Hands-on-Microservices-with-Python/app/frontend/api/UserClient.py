@@ -11,7 +11,7 @@ class UserClient:
             'password': form.password.data,
         }
         print("login payload is : \n",payload, flush=True) 
-        url = 'http://user:5010/api/user/login'
+        url = 'http://host.docker.internal:5001/api/user/login'
         try:
             response = requests.request("POST", url=url, data=payload, timeout=5)
             print("response for login is : \n",response.text, flush=True)
@@ -29,7 +29,7 @@ class UserClient:
 
     @staticmethod
     def does_exist(username):
-        url = 'http://user:5010/api/user/'+username+'/exist'
+        url = 'http://host.docker.internal:5001/api/user/'+username+'/exist'
         try:
             response = requests.request("GET", url=url, timeout=5)
             return response.status_code == 200

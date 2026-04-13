@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import sqlite3
 import os
 
@@ -87,6 +87,7 @@ def get_products():
     """)
     
     products = [dict(row) for row in cursor.fetchall()]
+    print("fetched products are : ", products, flush=True)
     conn.close()
     
     return jsonify({
@@ -118,6 +119,73 @@ def get_product(code):
         }), 200
     
     return jsonify({'success': False, 'message': 'Product not found'}), 404
+
+@app.route('/api/product/create', methods=['POST'])
+def create_product():
+    """Create a new product"""
+    try:
+        data = request.form
+        code = data.get('code')
+        title = data.get('title')
+        description = data.get('description', '')
+        vendor = data.get('vendor', '')
+        product = data.get('product', '')
+        tags = data.get('tags', '')
+        inventory = data.get('inventory', 0)
+        price = data.get('price', 0)
+        image = data.get('image', '')
+        
+        # Validate required fields
+        if not code or not title:
+            return jsonify({
+                'success': False,
+                'message': 'Code and Title are required'
+            }), 400
+        
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute("""
+                INSERT INTO products (Code, Title, Description, Vendor, Product, Tags, Inventory, Price, Image)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (code, title, description, vendor, product, tags, inventory, price, image))
+            
+            conn.commit()
+            print(f"✓ Product '{title}' created with code {code}", flush=True)
+            
+            return jsonify({
+                'success': True,
+                'message': f'Product {title} created successfully',
+                'result': {
+                    'Code': code,
+                    'Title': title,
+                    'Description': description,
+                    'Vendor': vendor,
+                    'Product': product,
+                    'Tags': tags,
+                    'Inventory': inventory,
+                    'Price': price,
+                    'Image': image
+                }
+            }), 201
+        
+        except sqlite3.IntegrityError as e:
+            conn.rollback()
+            print(f"[ERROR] Product creation failed: {str(e)}", flush=True)
+            return jsonify({
+                'success': False,
+                'message': f'Product with code {code} already exists'
+            }), 409
+        finally:
+            conn.close()
+    
+    except Exception as e:
+        print(f"[ERROR] Create product failed: {str(e)}", flush=True)
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
 
 if __name__ == '__main__':
     print("Product Service starting on 0.0.0.0:5010", flush=True)

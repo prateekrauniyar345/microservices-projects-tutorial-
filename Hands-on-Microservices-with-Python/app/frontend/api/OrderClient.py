@@ -11,7 +11,7 @@ class OrderClient:
             'Authorization': 'Basic ' + session.get('user_api_key', '')
         }
         try:
-            response = requests.request(method="GET", url='http://order:5010/api/order', headers=headers, timeout=5)
+            response = requests.request(method="GET", url='http://host.docker.internal:5003/api/order', headers=headers, timeout=5)
             order = response.json()
             return order
         except requests.exceptions.ConnectionError:
@@ -23,7 +23,7 @@ class OrderClient:
 
     @staticmethod
     def update_order(items):
-        url = 'http://order:5010/api/order/update'
+        url = 'http://host.docker.internal:5003/api/order/update'
         headers = {
             'Authorization': 'Basic ' + session.get('user_api_key', '')
         }
@@ -45,7 +45,7 @@ class OrderClient:
             'product_id': product_id,
             'qty': qty,
         }
-        url = 'http://order:5010/api/order/add-item'
+        url = 'http://host.docker.internal:5003/api/order/add-item'
         headers = {
             'Authorization': 'Basic ' + session.get('user_api_key', '')
         }

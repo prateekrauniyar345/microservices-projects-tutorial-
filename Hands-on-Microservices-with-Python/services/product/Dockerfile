@@ -11,5 +11,5 @@ COPY product_service.py .
 
 EXPOSE 5010
 
-# Start Flask application
-CMD ["flask", "--app", "product_service", "run", "--host=0.0.0.0", "--port=5010"]
+# Start Flask application with auto-reload
+CMD ["flask", "--app", "product_service", "run", "--host=0.0.0.0", "--port=5010", "--reload"]

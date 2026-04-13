@@ -94,7 +94,6 @@ services:
     # 'volumes' mounts files/folders from your host into the container.
     # This allows persistence or live file sharing.
     volumes:
-
       # This mounts the local './data' folder into '/data' inside the container.
       #
       # Left side:

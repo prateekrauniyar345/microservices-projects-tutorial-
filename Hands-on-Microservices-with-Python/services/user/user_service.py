@@ -39,6 +39,15 @@ init_db()
 def home():
     return jsonify({'message': 'User Service is running'}), 200
 
+@app.route("/health", methods=["GET"])
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'user',
+        'version': '1.0.0'
+    }), 200
+
 @app.route('/api/user/login', methods=['POST'])
 def login():
     """User login endpoint"""

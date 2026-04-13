@@ -1,0 +1,322 @@
+version: '3.8'
+# This tells Docker Compose which Compose file format/version is being used.
+# '3.8' is a common Compose file version and works well with modern Docker setups.
+# It does NOT mean your app version is 3.8.
+# Example:
+#   version: '3.8'
+# means "interpret this YAML using the Compose 3.8 specification".
+
+
+# 'services' is the main section where you define the containers
+# that make up your application.
+# In microservices, each service usually represents one app/component.
+# Example:
+#   user, order, product, payment, db, redis, etc.
+services:
+
+  # This is the name of the service inside Docker Compose.
+  # You will use this name when running commands like:
+  #   docker compose up order
+  #   docker compose logs order
+  #   docker compose restart order
+  #
+  # Important:
+  # 'order' here is the Compose service name, not necessarily the container name.
+  order:
+
+    # 'build' tells Docker Compose to build an image locally
+    # instead of pulling one from Docker Hub.
+    # This is used when you have your own Dockerfile.
+    build:
+
+      # 'context: .' means the build context is the current directory.
+      # Docker can only access files inside the build context during image build.
+      #
+      # Example:
+      # if your Dockerfile does:
+      #   COPY . /app
+      # then Docker copies files from the current folder into the image.
+      #
+      # '.' means:
+      # "use the current folder where docker-compose.yml is located"
+      context: .
+
+      # This tells Docker which Dockerfile to use for building this service.
+      # If omitted, Docker expects a file named exactly 'Dockerfile'.
+      #
+      # Example:
+      # dockerfile: Dockerfile.dev
+      # would use a development Dockerfile instead.
+      dockerfile: Dockerfile
+
+    # This sets the actual Docker container name.
+    # Without this, Docker Compose generates a name automatically,
+    # something like:
+    #   projectname-order-1
+    #
+    # With this line, the container will always be named:
+    #   order-service
+    #
+    # This can make logs and debugging easier.
+    container_name: order-service
+
+    # This sets the working directory INSIDE the container.
+    # It is similar to doing:
+    #   cd /app
+    # before running commands in the container.
+    #
+    # So if Flask starts, relative paths will be resolved from /app.
+    #
+    # Example:
+    # if your code opens:
+    #   open("config.json")
+    # Docker will look for:
+    #   /app/config.json
+    working_dir: /app
+    
+    # 'ports' maps ports between your host machine and the container.
+    # Format:
+    #   "HOST_PORT:CONTAINER_PORT"
+    #
+    # Here:
+    #   5003 on your machine maps to 5010 inside the container.
+    #
+    # So if Flask runs on port 5010 in the container,
+    # you can access it from your laptop/browser at:
+    #   http://localhost:5003
+    #
+    # Example:
+    # browser -> localhost:5003
+    # Docker forwards that traffic -> container:5010
+    ports:
+      - "5003:5010"
+    
+    # 'volumes' mounts files/folders from your host into the container.
+    # This allows persistence or live file sharing.
+    volumes:
+
+      # This mounts the local './data' folder into '/data' inside the container.
+      #
+      # Left side:
+      #   ./data   -> folder on your machine
+      # Right side:
+      #   /data    -> folder inside the container
+      #
+      # Meaning:
+      # if the app writes to /data/orders.db inside the container,
+      # you can find that file on your machine in ./data/orders.db
+      #
+      # Very useful for:
+      # - sqlite database files
+      # - uploaded files
+      # - logs
+      # - persistent service data
+      #
+      # Example:
+      # app writes:
+      #   /data/order.json
+      # host gets:
+      #   ./data/order.json
+      - order-data:/data
+    
+    # 'environment' sets environment variables inside the container.
+    # Apps often read these values at runtime for config.
+    #
+    # Example in Python:
+    #   os.getenv("SERVICE_NAME")
+    environment:
+
+      # Makes Python output unbuffered.
+      # That means print/log output appears immediately in Docker logs,
+      # instead of being delayed.
+      #
+      # Very useful while debugging.
+      #
+      # Example:
+      #   print("App started")
+      # appears immediately in:
+      #   docker compose logs -f order
+      - PYTHONUNBUFFERED=1
+
+      # Tells Flask to run in development mode.
+      # Development mode usually enables:
+      # - better error messages
+      # - auto reload in some setups
+      # - debug-friendly behavior
+      #
+      # Important:
+      # do NOT use this in production.
+      #
+      # Example:
+      # if your app crashes, Flask may show a detailed traceback.
+      - FLASK_ENV=development
+
+      # Tells Flask which app file/module to use.
+      #
+      # Here it says your Flask entry file is:
+      #   order_service.py
+      #
+      # This is used when you run Flask commands like:
+      #   flask run
+      #
+      # Example:
+      # Flask knows where to find:
+      #   app = Flask(__name__)
+      - FLASK_APP=order_service.py
+
+      # A custom environment variable.
+      # This is not from Docker or Flask automatically.
+      # Your application code can use it.
+      #
+      # Example in Python:
+      #   service_name = os.getenv("SERVICE_NAME")
+      #   print(service_name)  # "order"
+      #
+      # This is useful in microservices so each service can identify itself.
+      - SERVICE_NAME=order
+
+      # Another custom environment variable.
+      # This stores the version of the service.
+      #
+      # Example:
+      #   1.0.0 = major.minor.patch
+      #
+      # Your app might expose this in:
+      #   /health
+      #   /info
+      #   /version
+      #
+      # Example response:
+      #   {
+      #     "service": "order",
+      #     "version": "1.0.0"
+      #   }
+      - SERVICE_VERSION=1.0.0
+    
+    # 'networks' tells Docker which custom network this container joins.
+    # Containers on the same Docker network can talk to each other
+    # using service names.
+    #
+    # Example:
+    # if user-service and product-service are on the same network,
+    # order service may be able to call:
+    #   http://user:5010
+    #   http://product:5010
+    #
+    # without using localhost.
+    networks:
+      - microservices-network
+    
+    # This tells Docker when to restart the container automatically.
+    #
+    # 'unless-stopped' means:
+    # - restart if it crashes
+    # - restart after Docker daemon restarts
+    # - but do not restart if you manually stopped it
+    #
+    # Good for development and lightweight deployment.
+    #
+    # Example:
+    # if app crashes due to temporary issue, Docker brings it back up.
+    restart: unless-stopped
+    
+    # Healthcheck allows Docker to test whether the container is actually healthy,
+    # not just "running".
+    #
+    # A process can be running but still not be ready to serve requests.
+    # Healthcheck solves that problem.
+    healthcheck:
+
+      # 'test' is the command Docker runs inside the container to check health.
+      #
+      # This line says:
+      # run curl and fail if the endpoint does not return a successful response.
+      #
+      # Meaning:
+      # Docker checks:
+      #   http://localhost:5010/health
+      #
+      # Note:
+      # this is inside the container, so localhost means the container itself.
+      #
+      # 'CMD' means run the command directly.
+      # '-f' makes curl fail on HTTP errors like 404 or 500.
+      #
+      # Example:
+      # if /health returns 200 OK -> healthy
+      # if /health returns 500 -> unhealthy
+      test: ["CMD", "curl", "-f", "http://localhost:5010/health"]
+
+      # Docker runs the healthcheck every 10 seconds.
+      #
+      # Example:
+      # at 0s, 10s, 20s, 30s, ...
+      interval: 10s
+
+      # If the healthcheck command takes longer than 5 seconds,
+      # Docker treats it as failed.
+      #
+      # Example:
+      # if curl hangs for 7 seconds, that check fails.
+      timeout: 5s
+
+      # Docker will mark the container as unhealthy after 3 consecutive failures.
+      #
+      # Example:
+      # fail once   -> still trying
+      # fail twice  -> still trying
+      # fail 3rd    -> marked unhealthy
+      retries: 3
+
+      # After container startup, Docker waits 10 seconds before starting healthchecks.
+      #
+      # This gives your Flask app time to boot up.
+      #
+      # Example:
+      # if Flask needs 6 seconds to start,
+      # healthcheck will not fail too early.
+      start_period: 10s
+
+# Top-level 'networks' section defines custom Docker networks.
+# Services can then join these networks above.
+networks:
+
+  # This is the network name used by the service earlier.
+  # Containers attached to this network can communicate with each other.
+  microservices-network:
+
+    # 'bridge' is the default local Docker network driver.
+    # It is commonly used for containers running on a single machine.
+    #
+    # Good for local dev and simple multi-container communication.
+    driver: bridge
+
+# Top-level 'volumes' section defines named Docker volumes.
+# Named volumes are managed by Docker.
+#
+# Important:
+# In THIS file, you defined one named volume below,
+# but you are not actually using it in the service above.
+#
+# Because your service uses:
+#   - ./data:/data
+# which is a bind mount, not this named volume.
+volumes:
+
+  # This defines a named volume called 'order-data'.
+  #
+  # Docker stores it in its own managed storage area.
+  # You could use it like this:
+  #   volumes:
+  #     - order-data:/data
+  #
+  # That would be different from:
+  #   - ./data:/data
+  #
+  # Current status:
+  # this volume is defined, but not used by the order service.
+  order-data:
+
+    # 'local' is the default volume driver on the machine.
+    # Docker manages the data locally on this host.
+    driver: local

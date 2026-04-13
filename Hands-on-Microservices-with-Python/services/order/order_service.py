@@ -59,6 +59,18 @@ def get_user_id_from_auth(auth_header):
 def home():
     return jsonify({'message': 'Order Service is running'}), 200
 
+
+@app.route("/health", methods=["GET"])
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'order',
+        'version': '1.0.0'
+    }), 200
+
+    
+
 @app.route('/api/order', methods=['GET'])
 def get_order():
     """Get current order for user"""

@@ -1,0 +1,30 @@
+services:
+  user-service:
+    build: .
+    container_name: user-service
+    ports:
+      - "5001:5010"  # Host port 5001 mapped to container port 5010
+    volumes:
+      - user-data:/data  # Named volume for database persistence
+    environment:
+      PYTHONUNBUFFERED: 1
+      FLASK_ENV: development
+      SERVICE_NAME: user
+      SERVICE_VERSION: 1.0.0
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5010/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+
+volumes:
+  user-data:
+    driver: local
+
+networks:
+  microservices-network:
+    driver: bridge

@@ -63,6 +63,15 @@ init_db()
 def home():
     return jsonify({'message': 'Product Service is running'}), 200
 
+@app.route("/health", methods=["GET"])
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'product',
+        'version': '1.0.0'
+    }), 200
+
 @app.route('/api/products', methods=['GET'])
 def get_products():
     """Get all products"""

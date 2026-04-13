@@ -1,4 +1,4 @@
-# Hands-on Microservices Project - Comprehensive Notes
+# Hands-on Microservices Project - Comprehensive Notes - (ON BRANCH main)
 
 ## Overview
 
